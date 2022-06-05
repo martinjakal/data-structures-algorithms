@@ -8,21 +8,20 @@ BigInteger::BigInteger(long long number)
     if (number == 0)
     {
         digits_.push_back(0);
+        return;
     }
-    else
-    {
-        if (number < 0)
-        {
-            sign_ = false;
-            number *= -1;
-        }
 
-        while (number > 0)
-        {
-            digits_.push_back(number % BASE);
-            number /= BASE;
-        }
-    } 
+    if (number < 0)
+    {
+        sign_ = false;
+        number *= -1;
+    }
+
+    while (number > 0)
+    {
+        digits_.push_back(number % BASE);
+        number /= BASE;
+    }
 }
 
 BigInteger::BigInteger(const std::string& number)
@@ -100,8 +99,8 @@ auto BigInteger::print() const -> std::string
 
 bool BigInteger::compare(long long number) const
 {
-    std::size_t numDigits = number != 0 ? static_cast<std::size_t>(std::floor(std::log10(std::abs(number)))) + 1 : 1;
-    if (sign_ != number >= 0 || digitCnt() != numDigits)
+    std::size_t digits = number != 0 ? static_cast<std::size_t>(std::floor(std::log10(std::abs(number)))) + 1 : 1;
+    if (sign_ != number >= 0 || digitCnt() != digits)
         return false;
 
     for (std::size_t i = 0; i < digitCnt(); ++i, number /= BASE)
