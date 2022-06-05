@@ -12,7 +12,7 @@ public:
     void operator()();
 
 private:
-    int discs_;
+    const int discs_;
     Rod left_;
     Rod middle_;
     Rod right_;
