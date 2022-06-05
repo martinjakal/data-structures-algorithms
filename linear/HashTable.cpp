@@ -45,7 +45,7 @@ auto HashTable::print() const -> std::string
         out << i << ": ";
         for (auto item : table_[i])
             out << item << (item != table_[i].back() ? " " : "");
-        out << "\n";   
+        out << "\n";
     }
 
     return out.str();
