@@ -70,8 +70,10 @@ template <typename T>
 auto DisjointSet<T>::print() const -> std::string
 {
     std::stringstream out;
+
     for (const auto& item : data_)
         out << (!out.str().empty() ? " " : "") << item.first << ":" << 
         item.second.first << "(" << item.second.second << ")";
+
     return out.str();
 }
