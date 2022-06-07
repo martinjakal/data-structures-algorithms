@@ -29,8 +29,8 @@ public:
     auto end() -> Iterator;
     bool empty() const;
     bool full() const;
-    auto size() const -> std::size_t;
-    auto capacity() const -> std::size_t;
+    auto size() const -> std::size_t { return size_; }
+    auto capacity() const -> std::size_t { return capacity_; }
     void resize();
     void shrink();
     void clear();
@@ -127,7 +127,6 @@ bool DynamicArray<T>::operator==(const DynamicArray& other) const
         if (data_[i] != other.data_[i])
             return false;
     }
-
     return true;
 }
 
@@ -177,18 +176,6 @@ template <typename T>
 bool DynamicArray<T>::full() const
 {
     return size_ == capacity_;
-}
-
-template <typename T>
-auto DynamicArray<T>::size() const -> std::size_t
-{
-    return size_;
-}
-
-template <typename T>
-auto DynamicArray<T>::capacity() const -> std::size_t
-{
-    return capacity_;
 }
 
 template <typename T>
@@ -260,7 +247,6 @@ bool DynamicArray<T>::contains(const T& value) const
         if (data_[i] == value)
             return true;
     }
-
     return false;
 }
 
