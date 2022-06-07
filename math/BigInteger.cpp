@@ -49,10 +49,7 @@ BigInteger::BigInteger(const BigInteger& other) :
 BigInteger::BigInteger(BigInteger&& other) noexcept :
     digits_(std::move(other.digits_)),
     sign_(other.sign_)
-{
-    other.digits_.push_back(0);
-    other.sign_ = true;
-}
+{}
 
 BigInteger& BigInteger::operator=(const BigInteger& other)
 {
@@ -65,10 +62,6 @@ BigInteger& BigInteger::operator=(BigInteger&& other) noexcept
 {
     digits_ = std::move(other.digits_);
     sign_ = other.sign_;
-
-    other.digits_.push_back(0);
-    other.sign_ = true;
-
     return *this;
 }
 
@@ -108,7 +101,6 @@ bool BigInteger::compare(long long number) const
         if (digits_[i] != std::abs(number % BASE))
             return false;
     }
-
     return true;
 }
 
@@ -135,7 +127,6 @@ bool operator<(const BigInteger& lhs, const BigInteger& rhs)
         if (lhs.digits_[i] != rhs.digits_[i])
             return lhs.sign_ == true? lhs.digits_[i] < rhs.digits_[i] : lhs.digits_[i] > rhs.digits_[i];
     }
-
     return false;
 }
 
@@ -321,7 +312,6 @@ auto BigInteger::operator*=(BigInteger other) -> BigInteger&
 
     result.handleCarry();
     result.removeZeros();
-
     return *this = result;
 }
 
@@ -394,7 +384,6 @@ auto BigInteger::operator%=(BigInteger other) -> BigInteger&
     div /= other;
     div *= other;
     result -= div;
-
     return *this = result;
 }
 
@@ -477,7 +466,6 @@ bool BigInteger::isPalindrome() const
         if (digits_[i] != digits_[j])
             return false;
     }
-
     return true;
 }
 

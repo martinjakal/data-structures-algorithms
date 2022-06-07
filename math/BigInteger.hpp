@@ -1,11 +1,10 @@
 #pragma once
 
-#include <cstddef>
 #include <string>
 #include <vector>
 
-// BigInteger class represents a large number and supports basic arithmetic operations.
-// It is useful in calculations where larger numbers than the standard types are required.
+// BigInteger represents a large whole number and supports basic arithmetic operations.
+// This is useful in calculations where larger numbers than the standard types are required.
 class BigInteger
 {
 public:
