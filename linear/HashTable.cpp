@@ -1,12 +1,11 @@
 #include "HashTable.hpp"
 
+#include <cassert>
 #include <sstream>
 
 HashTable::HashTable(int slots) : slots_(slots)
 {
-    if (slots <= 0)
-        throw std::runtime_error("Invalid number of slots");
-
+    assert(slots > 0 && "Invalid number of slots");
     table_.resize(slots);
 }
 
