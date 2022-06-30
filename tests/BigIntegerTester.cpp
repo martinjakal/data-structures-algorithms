@@ -2,11 +2,29 @@
 #include <cmath>
 #include <iostream>
 
-#include "BigInteger.hpp"
+#include <math/BigInteger.hpp>
 
 class BigIntegerTester
 {
 public:
+    void fullTest(bool print = false) const
+    {
+        pairTest(10, 6, print);
+        pairTest(6, 10, print);
+        pairTest(-6, -10, print);
+        pairTest(-10, -6, print);
+        pairTest(10, -6, print);
+        pairTest(-6, 10, print);
+        pairTest(-10, 6, print);
+        pairTest(6, -10, print);
+        pairTest(5, -5, print);
+        pairTest(5, 0, print);
+        pairTest(0, 5, print);
+        pairTest(0, 0, print);
+
+        std::cout << "Passed all tests" << std::endl;
+    }
+
     void pairTest(long long a, long long b, bool print = false) const
     {
         const BigInteger x(a);
@@ -64,24 +82,6 @@ public:
         }
 
         std::cout << "Passed (" << x << ", " << y << ")" << std::endl;
-    }
-
-    void fullTest(bool print = false) const
-    {
-        pairTest(10, 6, print);
-        pairTest(6, 10, print);
-        pairTest(-6, -10, print);
-        pairTest(-10, -6, print);
-        pairTest(10, -6, print);
-        pairTest(-6, 10, print);
-        pairTest(-10, 6, print);
-        pairTest(6, -10, print);
-        pairTest(5, -5, print);
-        pairTest(5, 0, print);
-        pairTest(0, 5, print);
-        pairTest(0, 0, print);
-
-        std::cout << "Passed all tests" << std::endl;
     }
 };
 
