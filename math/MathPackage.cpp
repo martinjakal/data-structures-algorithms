@@ -1,4 +1,4 @@
-#include "MathPackager.hpp"
+#include "MathPackage.hpp"
 
 #include <algorithm>
 #include <array>
@@ -46,10 +46,10 @@ int countDigits(int number)
 int factorial(int number)
 {
     assert(0 <= number && number <= 12 && "Invalid factorial"); // prevent overflow
-    int fac = 1;
+    int fact = 1;
     for (int i = 2; i <= number; ++i)
-        fac *= i;
-    return fac;
+        fact *= i;
+    return fact;
 }
 
 double expBySquaring(double base, int exponent)
@@ -85,9 +85,7 @@ double median(std::vector<int> data)
         return 0;
 
     std::sort(data.begin(), data.end());
-
     auto mid = data.size() / 2;
-
     return mid % 2 == 0 ? (data[mid - 1] + data[mid]) / 2 : data[mid];
 }
 
