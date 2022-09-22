@@ -2,7 +2,7 @@
 #include <cmath>
 #include <iostream>
 
-#include <math/BigInteger.hpp>
+#include "../math/BigInteger.hpp"
 
 class BigIntegerTester
 {

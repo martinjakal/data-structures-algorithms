@@ -1,6 +1,7 @@
 #include "BigInteger.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <sstream>
 
 BigInteger::BigInteger(long long number)
