@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-#include <sequence/Sorter.hpp>
+#include "../sequence/Sorter.hpp"
 
 namespace sort
 {
