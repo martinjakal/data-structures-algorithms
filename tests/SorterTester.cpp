@@ -1,6 +1,7 @@
 #include <cassert>
 #include <functional>
 #include <iostream>
+#include <string>
 #include <vector>
 
 #include "../sequence/Sorter.hpp"
@@ -18,22 +19,22 @@ public:
         using T = decltype(data);
         using Compare = std::less<>;
 
-        sortTest<It, T, Compare>(bubbleSort<It, Compare>, data);
-        sortTest<It, T, Compare>(insertionSort<It, Compare>, data);
-        sortTest<It, T, Compare>(selectionSort<It, Compare>, data);
-        sortTest<It, T, Compare>(quickSort<It, Compare>, data);
-        sortTest<It, T, Compare>(mergeSort<It, Compare>, data);
-        sortTest<It, T, Compare>(heapSort<It, Compare>, data);
+        sortTest<It, T, Compare>("bubble", bubbleSort<It, Compare>, data);
+        sortTest<It, T, Compare>("insertion", insertionSort<It, Compare>, data);
+        sortTest<It, T, Compare>("selection", selectionSort<It, Compare>, data);
+        sortTest<It, T, Compare>("quick", quickSort<It, Compare>, data);
+        sortTest<It, T, Compare>("merge", mergeSort<It, Compare>, data);
+        sortTest<It, T, Compare>("heap", heapSort<It, Compare>, data);
 
         std::cout << "Passed all tests" << std::endl;
     }
 
     template <typename It, typename T, typename Compare>
-    void sortTest(std::function<void(It, It, Compare)> sort, T data, Compare cmp = Compare{}) const
+    void sortTest(const std::string& type, std::function<void(It, It, Compare)> sort, T data, Compare cmp = Compare{}) const
     {
         sort(data.begin(), data.end(), cmp);
         assert(std::is_sorted(data.begin(), data.end(), cmp) && "Sort error");
-        std::cout << "Passed" << std::endl;
+        std::cout << "Passed " << type << " sort" << std::endl;
     }
 };
 
