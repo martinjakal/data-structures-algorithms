@@ -675,7 +675,7 @@ bool Matrix::isRowEchelonForm() const
 
             if (i != 0) // row must have more zeros before pivot than the previous row
             {
-                if (zeroCounter <= baseZeros) 
+                if (zeroCounter <= baseZeros)
                     return false;
             }
 
