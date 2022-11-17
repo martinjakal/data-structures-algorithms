@@ -31,12 +31,16 @@ Matrix::Matrix(std::initializer_list<std::initializer_list<double>> data) :
     std::size_t i = 0;
     std::size_t j = 0;
 
-    for (auto rowIt = data.begin(); rowIt != data.end(); ++rowIt, ++i, j = 0)
+    for (auto row : data)
     {
-        for (auto colIt = rowIt->begin(); colIt != rowIt->end(); ++colIt, ++j)
+        for (auto element : row)
         {
-            data_[i][j] = *colIt;
+            data_[i][j] = element;
+            ++j;
         }
+
+        ++i;
+        j = 0;
     }
 }
 
