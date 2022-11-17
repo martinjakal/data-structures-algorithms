@@ -1,5 +1,6 @@
 #pragma once
 
+#include <initializer_list>
 #include <string>
 
 class Matrix
@@ -7,6 +8,7 @@ class Matrix
 public:
     Matrix() : Matrix(SIZE / 2, SIZE / 2) {}
     Matrix(std::size_t rowCnt, std::size_t colCnt, double element = 0);
+    Matrix(std::initializer_list<std::initializer_list<double>> data);
     Matrix(const Matrix& other);
     Matrix(Matrix&& other) noexcept;
     Matrix& operator=(const Matrix& other);

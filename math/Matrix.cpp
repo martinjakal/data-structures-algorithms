@@ -6,8 +6,8 @@
 Matrix::Matrix(std::size_t rowCnt, std::size_t colCnt, double element) :
     rowCnt_(rowCnt),
     colCnt_(colCnt),
-    rowDim_(updateSize(rowCnt)),
-    colDim_(updateSize(colCnt))
+    rowDim_(updateSize(rowCnt_)),
+    colDim_(updateSize(colCnt_))
 {
     alloc();
 
@@ -16,6 +16,26 @@ Matrix::Matrix(std::size_t rowCnt, std::size_t colCnt, double element) :
         for (std::size_t j = 0; j < colCnt_; ++j)
         {
             data_[i][j] = element;
+        }
+    }
+}
+
+Matrix::Matrix(std::initializer_list<std::initializer_list<double>> data) :
+    rowCnt_(data.size()),
+    colCnt_(data.size() > 0 ? data.begin()->size() : 0),
+    rowDim_(updateSize(rowCnt_)),
+    colDim_(updateSize(colCnt_))
+{
+    alloc();
+
+    std::size_t i = 0;
+    std::size_t j = 0;
+
+    for (auto rowIt = data.begin(); rowIt != data.end(); ++rowIt, ++i, j = 0)
+    {
+        for (auto colIt = rowIt->begin(); colIt != rowIt->end(); ++colIt, ++j)
+        {
+            data_[i][j] = *colIt;
         }
     }
 }
@@ -123,7 +143,9 @@ void Matrix::cleanup()
     {
         delete[] data_[i];
     }
+
     delete[] data_;
+    data_ = nullptr;
 }
 
 bool Matrix::isSameElement(double a, double b) const
