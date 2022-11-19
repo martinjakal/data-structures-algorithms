@@ -99,8 +99,8 @@ public:
 
         auto result = m.rowEchelonForm();
 
-        assert(result.isRowEchelonForm() && "Row echelon form error");
-        assert(result == expected && "Row echelon form error");
+        assert(result.isRowEchelonForm() && "Row echelon form (check) error");
+        assert(result == expected && "Row echelon form (calc) error");
         std::cout << "Passed row echelon form" << std::endl;
     }
 
@@ -111,8 +111,8 @@ public:
 
         auto result = m.reducedRowEchelonForm();
 
-        assert(result.isReducedRowEchelonForm() && "Reduced row echelon form error");
-        assert(result == expected && "Reduced row echelon form error");
+        assert(result.isReducedRowEchelonForm() && "Reduced row echelon form (check) error");
+        assert(result == expected && "Reduced row echelon form (calc) error");
         std::cout << "Passed reduced row echelon form" << std::endl;
     }
 
