@@ -882,10 +882,12 @@ auto Matrix::rowEchelonForm() const -> Matrix
                     result.swapRow(i, ordered);
                 }
 
+                /* temporarily disabled
                 if (result.data_[ordered][j] != 1) // set first element in the pivot row to 1
                 {
                     result.multiplyRow(ordered, 1.0 / result.data_[ordered][j]);
                 }
+                */
 
                 for (std::size_t i2 = ordered + 1; i2 < rowCnt_; ++i2) // set elements below first element in current pivot row to 0
                 {
@@ -928,17 +930,15 @@ auto Matrix::reducedRowEchelonForm() const -> Matrix
 
 auto Matrix::rank() const -> std::size_t
 {
-    if (isRowEchelonForm())
-    {
-        std::size_t nonZeroRows = 0;
-
-        for (std::size_t i = 0; i < rowCnt_; ++i)
-            nonZeroRows += !isRowZero(i);
-
-        return nonZeroRows;
-    }
-    else
+    if (!isRowEchelonForm())
         return this->rowEchelonForm().rank();
+
+    std::size_t nonZeroRows = 0;
+
+    for (std::size_t i = 0; i < rowCnt_; ++i)
+        nonZeroRows += !isRowZero(i);
+
+    return nonZeroRows;
 }
 
 auto Matrix::linSolve(const Matrix& a, const Matrix& b) -> Matrix

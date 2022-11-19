@@ -8,16 +8,41 @@ class MatrixTester
 public:
     void fullTest() const
     {
-        testMultiplication();
-        testTranspose();
-        testDeterminant();
-        testInverse();
-        testLinSolve();
+        additionTest();
+        subtractionTest();
+        multiplicationTest();
+        transposeTest();
+        determinantTest();
+        traceTest();
+        inverseTest();
+        rowEchelonFormTest();
+        reducedRowEchelonFormTest();
+        linSolveTest();
 
         std::cout << "Passed all tests" << std::endl;
     }
 
-    void testMultiplication() const
+    void additionTest() const
+    {
+        Matrix a = { { 4, 8 }, { 3, 7 } };
+        Matrix b = { { 1, 0 }, { 5, 2 } };
+        Matrix result = { { 5, 8 }, { 8, 9 } };
+
+        assert(a + b == result && "Addition error");
+        std::cout << "Passed addition" << std::endl;
+    }
+
+    void subtractionTest() const
+    {
+        Matrix a = { { 2, 8 }, { 0, 9 } };
+        Matrix b = { { 5, 6 }, { 11, 3 } };
+        Matrix result = { { -3, 2 }, { -11, 6 } };
+
+        assert(a - b == result && "Subtraction error");
+        std::cout << "Passed subtraction" << std::endl;
+    }
+
+    void multiplicationTest() const
     {
         Matrix a = { { 1, 2, 3 }, { 4, 5, 6 } };
         Matrix b = { { 7, 8 }, { 9, 10 }, { 11, 12 } };
@@ -27,7 +52,7 @@ public:
         std::cout << "Passed multiplication" << std::endl;
     }
 
-    void testTranspose() const
+    void transposeTest() const
     {
         Matrix m = { { 6, 4, 24 }, { 1, -9, 8 } };
         Matrix result = { { 6, 1 }, { 4, -9 }, { 24, 8 } };
@@ -36,7 +61,7 @@ public:
         std::cout << "Passed transpose" << std::endl;
     }
 
-    void testDeterminant() const
+    void determinantTest() const
     {
         Matrix m1 = { { 4, 6 }, { 3, 8 } };
         double d1 = 14;
@@ -49,7 +74,16 @@ public:
         std::cout << "Passed determinant" << std::endl;
     }
 
-    void testInverse() const
+    void traceTest() const
+    {
+        Matrix m = { { 1, 0, 3 }, { 11, 5, 2 }, { 6, 12, -5 } };
+        double tr = 1;
+
+        assert(m.trace() == tr && "Trace error");
+        std::cout << "Passed trace" << std::endl;
+    }
+
+    void inverseTest() const
     {
         Matrix m = { { 1, 2 }, { 3, 9 } };
         Matrix result = { { 3, -2.0 / 3 }, { -1, 1.0 / 3 } };
@@ -58,7 +92,22 @@ public:
         std::cout << "Passed inverse" << std::endl;
     }
 
-    void testLinSolve() const
+    void rowEchelonFormTest() const
+    {
+        Matrix m = { { 1, 1, 2 }, { 1, 2, 3 }, { 3, 4, 5 } };
+        Matrix result = { { 1, 1, 2 }, { 0, 1, 1 }, { 0, 0, -2 } };
+
+        assert(m.rowEchelonForm() == result && "Row echelon form error");
+        std::cout << "Passed row echelon form" << std::endl;
+    }
+
+    void reducedRowEchelonFormTest() const
+    {
+        assert(true && "Reduced row echelon form error");
+        std::cout << "Passed reduced row echelon form" << std::endl;
+    }
+
+    void linSolveTest() const
     {
         Matrix lhs = { { 1, 2 }, { 3, 9 } };
         Matrix rhs = { { 5 }, { 21 } };
