@@ -170,7 +170,6 @@ bool Matrix::operator==(const Matrix& other) const
                 return false;
         }
     }
-
     return true;
 }
 
@@ -255,7 +254,7 @@ auto Matrix::operator+(const Matrix& other) const -> Matrix
     if (!isSameDim(other))
         throw std::runtime_error("Invalid dimensions");
 
-    Matrix result(*this);
+    Matrix result = *this;
 
     for (std::size_t i = 0; i < result.rowCnt_; ++i)
     {
@@ -273,7 +272,7 @@ auto Matrix::operator-(const Matrix& other) const -> Matrix
     if (!isSameDim(other))
         throw std::runtime_error("Invalid dimensions");
 
-    Matrix result(*this);
+    Matrix result = *this;
 
     for (std::size_t i = 0; i < result.rowCnt_; ++i)
     {
@@ -317,7 +316,6 @@ bool Matrix::isRowZero(std::size_t i) const
         if (data_[i][j] != 0)
             return false;
     }
-
     return true;
 }
 
@@ -585,7 +583,6 @@ bool Matrix::isDiagonal() const
                 return false;
         }
     }
-
     return true;
 }
 
@@ -602,7 +599,6 @@ bool Matrix::isIdentity() const
                 return false;
         }
     }
-
     return true;
 }
 
@@ -619,7 +615,6 @@ bool Matrix::isSymmetrical() const
                 return false;
         }
     }
-
     return true;
 }
 
@@ -636,7 +631,6 @@ bool Matrix::isLowerTriangular() const
                 return false;
         }
     }
-
     return true;
 }
 
@@ -653,7 +647,6 @@ bool Matrix::isUpperTriangular() const
                 return false;
         }
     }
-
     return true;
 }
 
@@ -672,45 +665,38 @@ bool Matrix::isSparse() const
     return sparsity() > 0.5;
 }
 
-// 1. The first non-zero element (called the leading entry or pivot) in each row is 1.
-// 2. Each leading entry is in a column to the right of the leading entry in the previou row.
-// 3. Zero rows, if there are any, are below non-zero rows.
+// The first non-zero element is called the leading entry or pivot.
+// 1. The leading coefficient is always to the right of the leading coefficient in the row above.
+// 2. All zero rows are at the bottom of the matrix.
 bool Matrix::isRowEchelonForm() const
 {
     bool foundZeroRow = false;
     std::size_t baseZeros = 0;
 
-    for (std::size_t i = 0; i < rowCnt_; ++i)
+    for (std::size_t i = 0; i < rowCnt_; ++i) // iterate over rows
     {
         if (!foundZeroRow)
         {
-            std::size_t zeroCounter = 0;
+            std::size_t curZeros = 0;
 
-            for (std::size_t j = 0; j < colCnt_; ++j) // find the pivot and count zeros to the left
+            for (std::size_t j = 0; j < colCnt_; ++j) // count zeros before pivot
             {
                 if (data_[i][j] == 0)
-                    ++zeroCounter;
+                    ++curZeros;
                 else
-                {
-                    if (data_[i][j] != 1)
-                        return false;
-
                     break;
-                }
             }
 
-            if (i != 0) // row must have more zeros before pivot than the previous row
-            {
-                if (zeroCounter <= baseZeros)
-                    return false;
-            }
+            // check if the current row has more zeros than the previous row (skip for the first row)
+            if (curZeros <= baseZeros && i != 0)
+                return false;
 
-            baseZeros = zeroCounter;
+            baseZeros = curZeros; // update zero count
 
-            if (zeroCounter == colCnt_)
+            if (curZeros == colCnt_) // mark if the current row was a zero row
                 foundZeroRow = true;
         }
-        else // if zero row is found, all following rows must also be zero
+        else // after the first zero row is found, check if all following rows are also zero rows
         {
             if (!isRowZero(i))
                 return false;
@@ -721,7 +707,8 @@ bool Matrix::isRowEchelonForm() const
 }
 
 // 1. The matrix is in row echelon form.
-// 2. The leading entry in each row is the only non-zero element in its column.
+// 2. The leading coefficient is always the number 1.
+// 3. The leading coefficient must be the only non-zero number in its column.
 bool Matrix::isReducedRowEchelonForm() const
 {
     if (!isRowEchelonForm())
@@ -731,9 +718,12 @@ bool Matrix::isReducedRowEchelonForm() const
     {
         for (std::size_t j = 0; j < colCnt_; ++j)
         {
-            if (data_[i][j] != 0)
+            if (data_[i][j] != 0) // find the pivot
             {
-                for (std::size_t i2 = 0; i2 < rowCnt_; ++i2)
+                if (data_[i][j] != 1) // check if the pivot is 1
+                    return false;
+
+                for (std::size_t i2 = 0; i2 < rowCnt_; ++i2) // check if the pivot is the only non-zero element in its column
                 {
                     if (data_[i2][j] != 0 && i2 != i)
                         return false;
@@ -774,7 +764,7 @@ void Matrix::autofill(double element)
 
 auto Matrix::submatrix(std::size_t i, std::size_t j) const -> Matrix
 {
-    Matrix result(*this);
+    Matrix result = *this;
     result.removeRow(i);
     result.removeCol(j);
     return result;
@@ -795,10 +785,11 @@ auto Matrix::transpose() const -> Matrix
     return result;
 }
 
+// Calculate the sum of elements on the main diagonal of square matrix.
 double Matrix::trace() const
 {
     if (!isSquare())
-        return 0;
+        throw std::runtime_error("Non-square matrix");
 
     double trace = 0;
 
@@ -808,6 +799,8 @@ double Matrix::trace() const
     return trace;
 }
 
+// Implemented as the Laplace expansion. The determinant is calculated as the weighted sum of minors
+// (determinants of the submatrices) using recursion.
 double Matrix::determinant() const
 {
     if (!isSquare())
@@ -815,19 +808,17 @@ double Matrix::determinant() const
 
     if (rowCnt_ == 1)
         return data_[0][0];
-    else
+
+    double determinant = 0;
+    int sign = 1;
+
+    for (std::size_t j = 0; j < colCnt_; ++j)
     {
-        double determinant = 0;
-        int sign = 1;
-
-        for (std::size_t j = 0; j < colCnt_; ++j)
-        {
-            determinant += sign * data_[0][j] * this->submatrix(0, j).determinant();
-            sign *= -1;
-        }
-
-        return determinant;
+        determinant += sign * data_[0][j] * this->submatrix(0, j).determinant();
+        sign *= -1;
     }
+
+    return determinant;
 }
 
 double Matrix::sparsity() const
@@ -851,7 +842,7 @@ auto Matrix::inverse() const -> Matrix
     if (isSingular())
         throw std::runtime_error("Singular matrix");
 
-    Matrix result(*this);
+    Matrix result = *this;
     double mainDeterminant = result.determinant();
 
     for (std::size_t i = 0; i < rowCnt_; ++i)
@@ -868,7 +859,10 @@ auto Matrix::inverse() const -> Matrix
 
 auto Matrix::rowEchelonForm() const -> Matrix
 {
-    Matrix result(*this);
+    if (isRowEchelonForm())
+        return *this;
+
+    Matrix result = *this;
     std::size_t ordered = 0;
 
     for (std::size_t j = 0; j < colCnt_; ++j)
@@ -881,13 +875,6 @@ auto Matrix::rowEchelonForm() const -> Matrix
                 {
                     result.swapRow(i, ordered);
                 }
-
-                /* temporarily disabled
-                if (result.data_[ordered][j] != 1) // set first element in the pivot row to 1
-                {
-                    result.multiplyRow(ordered, 1.0 / result.data_[ordered][j]);
-                }
-                */
 
                 for (std::size_t i2 = ordered + 1; i2 < rowCnt_; ++i2) // set elements below first element in current pivot row to 0
                 {
@@ -906,15 +893,23 @@ auto Matrix::rowEchelonForm() const -> Matrix
 
 auto Matrix::reducedRowEchelonForm() const -> Matrix
 {
-    Matrix result(isRowEchelonForm() ? *this : this->rowEchelonForm());
+    if (isReducedRowEchelonForm())
+        return *this;
 
-    for (std::size_t i = rowCnt_ - 1; i > 0; --i)
+    Matrix result = isRowEchelonForm() ? *this : this->rowEchelonForm();
+
+    for (std::size_t i = 0; i < rowCnt_; ++i)
     {
         for (std::size_t j = 0; j < colCnt_; ++j)
         {
             if (result.data_[i][j] != 0)
             {
-                for (std::size_t i2 = 0; i2 < i; ++i2) // set elements above first element in pivot row to 0
+                if (result.data_[i][j] != 1) // set the pivot element in the pivot row to 1
+                {
+                    result.multiplyRow(i, 1.0 / result.data_[i][j]);
+                }
+
+                for (std::size_t i2 = 0; i2 < i; ++i2) // set the other elements in the pivot column to 0
                 {
                     if (result.data_[i2][j] != 0)
                         result.addRowToRow(i, i2, -result.data_[i2][j]);

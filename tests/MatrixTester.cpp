@@ -13,7 +13,6 @@ public:
         multiplicationTest();
         transposeTest();
         determinantTest();
-        traceTest();
         inverseTest();
         rowEchelonFormTest();
         reducedRowEchelonFormTest();
@@ -26,9 +25,11 @@ public:
     {
         Matrix a = { { 4, 8 }, { 3, 7 } };
         Matrix b = { { 1, 0 }, { 5, 2 } };
-        Matrix result = { { 5, 8 }, { 8, 9 } };
+        Matrix expected = { { 5, 8 }, { 8, 9 } };
 
-        assert(a + b == result && "Addition error");
+        auto result = a + b;
+
+        assert(result == expected && "Addition error");
         std::cout << "Passed addition" << std::endl;
     }
 
@@ -36,9 +37,11 @@ public:
     {
         Matrix a = { { 2, 8 }, { 0, 9 } };
         Matrix b = { { 5, 6 }, { 11, 3 } };
-        Matrix result = { { -3, 2 }, { -11, 6 } };
+        Matrix expected = { { -3, 2 }, { -11, 6 } };
 
-        assert(a - b == result && "Subtraction error");
+        auto result = a - b;
+
+        assert(result == expected && "Subtraction error");
         std::cout << "Passed subtraction" << std::endl;
     }
 
@@ -46,18 +49,22 @@ public:
     {
         Matrix a = { { 1, 2, 3 }, { 4, 5, 6 } };
         Matrix b = { { 7, 8 }, { 9, 10 }, { 11, 12 } };
-        Matrix result = { { 58, 64 }, { 139, 154 } };
+        Matrix expected = { { 58, 64 }, { 139, 154 } };
 
-        assert(a * b == result && "Multiplication error");
+        auto result = a * b;
+
+        assert(result == expected && "Multiplication error");
         std::cout << "Passed multiplication" << std::endl;
     }
 
     void transposeTest() const
     {
         Matrix m = { { 6, 4, 24 }, { 1, -9, 8 } };
-        Matrix result = { { 6, 1 }, { 4, -9 }, { 24, 8 } };
+        Matrix expected = { { 6, 1 }, { 4, -9 }, { 24, 8 } };
 
-        assert(m.transpose() == result && "Transpose error");
+        auto result = m.transpose();
+
+        assert(result == expected && "Transpose error");
         std::cout << "Passed transpose" << std::endl;
     }
 
@@ -74,36 +81,38 @@ public:
         std::cout << "Passed determinant" << std::endl;
     }
 
-    void traceTest() const
-    {
-        Matrix m = { { 1, 0, 3 }, { 11, 5, 2 }, { 6, 12, -5 } };
-        double tr = 1;
-
-        assert(m.trace() == tr && "Trace error");
-        std::cout << "Passed trace" << std::endl;
-    }
-
     void inverseTest() const
     {
         Matrix m = { { 1, 2 }, { 3, 9 } };
-        Matrix result = { { 3, -2.0 / 3 }, { -1, 1.0 / 3 } };
+        Matrix expected = { { 3, -2.0 / 3 }, { -1, 1.0 / 3 } };
 
-        assert(m.inverse() == result && "Inverse error");
+        auto result = m.inverse();
+
+        assert(result == expected && "Inverse error");
         std::cout << "Passed inverse" << std::endl;
     }
 
     void rowEchelonFormTest() const
     {
         Matrix m = { { 1, 1, 2 }, { 1, 2, 3 }, { 3, 4, 5 } };
-        Matrix result = { { 1, 1, 2 }, { 0, 1, 1 }, { 0, 0, -2 } };
+        Matrix expected = { { 1, 1, 2 }, { 0, 1, 1 }, { 0, 0, -2 } };
 
-        assert(m.rowEchelonForm() == result && "Row echelon form error");
+        auto result = m.rowEchelonForm();
+
+        assert(result.isRowEchelonForm() && "Row echelon form error");
+        assert(result == expected && "Row echelon form error");
         std::cout << "Passed row echelon form" << std::endl;
     }
 
     void reducedRowEchelonFormTest() const
     {
-        assert(true && "Reduced row echelon form error");
+        Matrix m = { { 1, 2, 5 }, { 2, -1, 5 } };
+        Matrix expected = { { 1, 0, 3 }, { 0, 1, 1 } };
+
+        auto result = m.reducedRowEchelonForm();
+
+        assert(result.isReducedRowEchelonForm() && "Reduced row echelon form error");
+        assert(result == expected && "Reduced row echelon form error");
         std::cout << "Passed reduced row echelon form" << std::endl;
     }
 
@@ -111,9 +120,11 @@ public:
     {
         Matrix lhs = { { 1, 2 }, { 3, 9 } };
         Matrix rhs = { { 5 }, { 21 } };
-        Matrix result = { { 1 }, { 2 } };
+        Matrix expected = { { 1 }, { 2 } };
 
-        assert(Matrix::linSolve(lhs, rhs) == result && "Linear solve error");
+        auto result = Matrix::linSolve(lhs, rhs);
+
+        assert(result == expected && "Linear solve error");
         std::cout << "Passed linear solve" << std::endl;
     }
 };
