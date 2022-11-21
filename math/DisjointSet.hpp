@@ -31,7 +31,7 @@ template <typename T>
 auto DisjointSet<T>::findSet(const T& key) const -> const T&
 {
     const auto& parent = data_.at(key).first;
-    return parent == key ? parent : findSet(parent);  
+    return parent == key ? parent : findSet(parent);
 }
 
 template <typename T>
@@ -72,7 +72,7 @@ auto DisjointSet<T>::print() const -> std::string
     std::stringstream out;
 
     for (const auto& item : data_)
-        out << (!out.str().empty() ? " " : "") << item.first << ":" << 
+        out << (!out.str().empty() ? " " : "") << item.first << ":" <<
         item.second.first << "(" << item.second.second << ")";
 
     return out.str();

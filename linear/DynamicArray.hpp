@@ -133,7 +133,7 @@ bool DynamicArray<T>::operator==(const DynamicArray& other) const
 template <typename T>
 bool DynamicArray<T>::operator!=(const DynamicArray& other) const
 {
-    return !(*this == other); 
+    return !(*this == other);
 }
 
 template <typename T>

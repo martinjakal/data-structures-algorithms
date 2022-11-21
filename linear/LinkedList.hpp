@@ -29,7 +29,7 @@ public:
     void remove(const T& value);
     void removeAtBegin();
     void removeAtPos(std::size_t idx);
-    void removeAtEnd();    
+    void removeAtEnd();
 
 private:
     LinkedNode<T>* head_ = nullptr;
@@ -221,7 +221,7 @@ void LinkedList<T>::removeAtPos(std::size_t idx)
     }
 
     parent->setNext(node->getNext());
-    delete node;        
+    delete node;
 }
 
 template <typename T>

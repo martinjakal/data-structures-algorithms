@@ -32,12 +32,12 @@ BigInteger::BigInteger(const std::string& number)
     if (number.empty() || number.begin() + startIdx == number.end() ||
         std::any_of(number.begin() + startIdx, number.end(), [](char c) { return !std::isdigit(c); }))
         throw std::runtime_error("Invalid string input");
-    
+
     for (auto it = number.rbegin(); it != number.rend() - startIdx; ++it)
     {
         digits_.push_back(*it - '0');
     }
-    
+
     sign_ = startIdx == 0;
     removeZeros();
 }
@@ -80,7 +80,7 @@ auto operator<<(std::ostream& os, const BigInteger& bigInteger) -> std::ostream&
 
     for (auto it = bigInteger.digits_.rbegin(); it != bigInteger.digits_.rend(); ++it)
         os << *it;
-    
+
     return os;
 }
 
@@ -121,12 +121,12 @@ bool operator<(const BigInteger& lhs, const BigInteger& rhs)
         return lhs.sign_ < rhs.sign_;
 
     if (lhs.digitCnt() != rhs.digitCnt())
-        return lhs.sign_ == true? lhs.digitCnt() < rhs.digitCnt() : lhs.digitCnt() > rhs.digitCnt();
+        return lhs.sign_ == true ? lhs.digitCnt() < rhs.digitCnt() : lhs.digitCnt() > rhs.digitCnt();
 
     for (std::size_t i = lhs.digitCnt(); i-- > 0; )
     {
         if (lhs.digits_[i] != rhs.digits_[i])
-            return lhs.sign_ == true? lhs.digits_[i] < rhs.digits_[i] : lhs.digits_[i] > rhs.digits_[i];
+            return lhs.sign_ == true ? lhs.digits_[i] < rhs.digits_[i] : lhs.digits_[i] > rhs.digits_[i];
     }
     return false;
 }
@@ -150,7 +150,7 @@ auto BigInteger::operator++() -> BigInteger&
 {
     if (this->compare(-1)) // special case -1 -> 0
     {
-        --digits_[0];    
+        --digits_[0];
         changeSign();
     }
     else if (sign_ == true)
@@ -220,13 +220,13 @@ auto BigInteger::operator+=(BigInteger other) -> BigInteger&
     {
         other.changeSign();
         *this -= other;
-    }    
+    }
     else
     {
         if (digitCnt() < other.digitCnt())
         {
             digits_.resize(other.digitCnt());
-        } 
+        }
 
         for (std::size_t i = 0; i < other.digitCnt(); ++i)
         {
@@ -280,7 +280,7 @@ auto BigInteger::operator-=(BigInteger other) -> BigInteger&
         if (needSignChange)
             changeSign();
     }
-    
+
     return *this;
 }
 
@@ -327,7 +327,7 @@ auto BigInteger::operator/=(BigInteger other) -> BigInteger&
 {
     if (other.isZero())
         throw std::runtime_error("Cannot divide or mod by zero");
-    
+
     if (this->isZero())
         return *this;
 
@@ -337,7 +337,7 @@ auto BigInteger::operator/=(BigInteger other) -> BigInteger&
 
     if (*this < other)
         return *this = 0;
-    
+
     BigInteger result;
     BigInteger left;
 
@@ -354,8 +354,8 @@ auto BigInteger::operator/=(BigInteger other) -> BigInteger&
             left -= other;
             ++result;
         }
-    } 
-    
+    }
+
     if (needSignChange)
         result.changeSign();
 
@@ -486,7 +486,7 @@ void BigInteger::handleCarry()
         if (i == digitCnt() - 1)
         {
             digits_.push_back(0);
-        } 
+        }
 
         digits_[i + 1] += digits_[i] / BASE;
         digits_[i] %= BASE;

@@ -40,14 +40,12 @@ bool SudokuBacktracker::findEmptyPlace(int& row, int& col) const
                 return true;
         }
     }
-
     return false;
 }
 
 bool SudokuBacktracker::noConflicts(int row, int col, int number) const
 {
-    return !usedInRow(row, number) && !usedInCol(col, number)
-        && !usedInBox(row - row % 3, col - col % 3, number);
+    return !usedInRow(row, number) && !usedInCol(col, number) && !usedInBox(row - row % 3, col - col % 3, number);
 }
 
 bool SudokuBacktracker::usedInRow(int row, int number) const
@@ -57,7 +55,6 @@ bool SudokuBacktracker::usedInRow(int row, int number) const
         if (grid_[row][col] == number)
             return true;
     }
-
     return false;
 }
 
@@ -68,7 +65,6 @@ bool SudokuBacktracker::usedInCol(int col, int number) const
         if (grid_[row][col] == number)
             return true;
     }
-
     return false;
 }
 
@@ -82,6 +78,5 @@ bool SudokuBacktracker::usedInBox(int boxRow, int boxCol, int number) const
                 return true;
         }
     }
-
     return false;
 }

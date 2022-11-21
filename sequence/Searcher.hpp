@@ -107,7 +107,7 @@ auto interpolationSearch(It first, It last, const T& value, Compare cmp = Compar
 
         if (cmp(*newIt, value))
         {
-            std::advance(lowIt, pos + 1); 
+            std::advance(lowIt, pos + 1);
         }
         else if (cmp(value, *newIt))
         {

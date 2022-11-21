@@ -18,7 +18,7 @@ public:
     void push(const T& value);
     void pop();
     auto print() const -> std::string;
-    
+
 private:
     std::vector<T> data_;
 
