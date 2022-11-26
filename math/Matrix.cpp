@@ -437,7 +437,6 @@ bool Matrix::isColZero(std::size_t j) const
         if (data_[i][j] != 0)
             return false;
     }
-
     return true;
 }
 
@@ -679,13 +678,8 @@ bool Matrix::isRowEchelonForm() const
         {
             std::size_t curZeros = 0;
 
-            for (std::size_t j = 0; j < colCnt_; ++j) // count zeros before pivot
-            {
-                if (data_[i][j] == 0)
-                    ++curZeros;
-                else
-                    break;
-            }
+            for (std::size_t j = 0; j < colCnt_ && data_[i][j] == 0; ++j) // count zeros before pivot
+                ++curZeros;
 
             // check if the current row has more zeros than the previous row (skip for the first row)
             if (curZeros <= baseZeros && i != 0)
@@ -718,19 +712,19 @@ bool Matrix::isReducedRowEchelonForm() const
     {
         for (std::size_t j = 0; j < colCnt_; ++j)
         {
-            if (data_[i][j] != 0) // find the pivot
+            if (data_[i][j] == 0)
+                continue;
+
+            if (data_[i][j] != 1) // check if the pivot is 1
+                return false;
+
+            for (std::size_t i2 = 0; i2 < rowCnt_; ++i2) // check if the pivot is the only non-zero element in its column
             {
-                if (data_[i][j] != 1) // check if the pivot is 1
+                if (data_[i2][j] != 0 && i2 != i)
                     return false;
-
-                for (std::size_t i2 = 0; i2 < rowCnt_; ++i2) // check if the pivot is the only non-zero element in its column
-                {
-                    if (data_[i2][j] != 0 && i2 != i)
-                        return false;
-                }
-
-                break;
             }
+
+            break;
         }
     }
 
@@ -807,9 +801,13 @@ double Matrix::determinant() const
         throw std::runtime_error("Non-square matrix");
 
     if (rowCnt_ == 1)
+    {
         return data_[0][0];
+    }
     else if (rowCnt_ == 2)
+    {
         return data_[0][0] * data_[1][1] - data_[0][1] * data_[1][0];
+    }
     else if (rowCnt_ == 3)
     {
         auto first = data_[0][0] * (data_[1][1] * data_[2][2] - data_[1][2] * data_[2][1]);
@@ -878,22 +876,22 @@ auto Matrix::rowEchelonForm() const -> Matrix
     {
         for (std::size_t i = ordered; i < rowCnt_; ++i)
         {
-            if (result.data_[i][j] != 0) // locate pivot row by finding first non-zero element in a column
+            if (result.data_[i][j] == 0) // locate pivot row by finding first non-zero element in a column
+                continue;
+
+            if (i != ordered) // move pivot row to the ordered part
             {
-                if (i != ordered) // move pivot row to the ordered part
-                {
-                    result.swapRow(i, ordered);
-                }
-
-                for (std::size_t i2 = ordered + 1; i2 < rowCnt_; ++i2) // set elements below first element in current pivot row to 0
-                {
-                    if (result.data_[i2][j] != 0)
-                        result.addRowToRow(ordered, i2, -result.data_[i2][j]);
-                }
-
-                ++ordered;
-                break;
+                result.swapRow(i, ordered);
             }
+
+            for (std::size_t i2 = ordered + 1; i2 < rowCnt_; ++i2) // set elements below first element in current pivot row to 0
+            {
+                if (result.data_[i2][j] != 0)
+                    result.addRowToRow(ordered, i2, -result.data_[i2][j]);
+            }
+
+            ++ordered;
+            break;
         }
     }
 
@@ -911,21 +909,21 @@ auto Matrix::reducedRowEchelonForm() const -> Matrix
     {
         for (std::size_t j = 0; j < colCnt_; ++j)
         {
-            if (result.data_[i][j] != 0)
+            if (result.data_[i][j] == 0)
+                continue;
+
+            if (result.data_[i][j] != 1) // set the pivot element in the pivot row to 1
             {
-                if (result.data_[i][j] != 1) // set the pivot element in the pivot row to 1
-                {
-                    result.multiplyRow(i, 1.0 / result.data_[i][j]);
-                }
-
-                for (std::size_t i2 = 0; i2 < i; ++i2) // set the other elements in the pivot column to 0
-                {
-                    if (result.data_[i2][j] != 0)
-                        result.addRowToRow(i, i2, -result.data_[i2][j]);
-                }
-
-                break;
+                result.multiplyRow(i, 1.0 / result.data_[i][j]);
             }
+
+            for (std::size_t i2 = 0; i2 < i; ++i2) // set the other elements in the pivot column to 0
+            {
+                if (result.data_[i2][j] != 0)
+                    result.addRowToRow(i, i2, -result.data_[i2][j]);
+            }
+
+            break;
         }
     }
 
