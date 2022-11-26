@@ -808,6 +808,15 @@ double Matrix::determinant() const
 
     if (rowCnt_ == 1)
         return data_[0][0];
+    else if (rowCnt_ == 2)
+        return data_[0][0] * data_[1][1] - data_[0][1] * data_[1][0];
+    else if (rowCnt_ == 3)
+    {
+        auto first = data_[0][0] * (data_[1][1] * data_[2][2] - data_[1][2] * data_[2][1]);
+        auto second = data_[0][1] * (data_[1][0] * data_[2][2] - data_[1][2] * data_[2][0]);
+        auto third = data_[0][2] * (data_[1][0] * data_[2][1] - data_[1][1] * data_[2][0]);
+        return first - second + third;
+    }
 
     double determinant = 0;
     int sign = 1;
