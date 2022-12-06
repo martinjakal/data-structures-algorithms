@@ -18,7 +18,7 @@ public:
 
 protected:
     void cleanUpSubtree(Node* node);
-    void printSubtree(std::stringstream& out, std::string prefix, Node* node, bool isLeft) const;
+    void printSubtree(Node* node, std::stringstream& out, std::string prefix, std::string childprefix) const;
 
     virtual auto search(Node* node, const T& key) const -> Node* = 0;
     virtual auto findMin(Node* node) const -> Node* = 0;
@@ -53,22 +53,26 @@ template <typename T, typename Node>
 auto A_BinaryTree<T, Node>::print() const -> std::string
 {
     std::stringstream out;
-    printSubtree(out, {}, this->root_, false);
+    printSubtree(this->root_, out, "└── ", "    ");
     return out.str();
 }
 
 // Print subtree based on Linux "tree" command.
 template <typename T, typename Node>
-void A_BinaryTree<T, Node>::printSubtree(std::stringstream& out, std::string prefix, Node* node, bool isLeft) const
+void A_BinaryTree<T, Node>::printSubtree(std::stringstream& out, std::string prefix, std::string childprefix, Node* node) const
 {
     if (node == this->nil_)
         return;
 
-    out << prefix << (isLeft ? "├── " : "└── ") << node->getKey() << '\n';
-    prefix += isLeft ? "|   " : "    ";
+    out << prefix << node->getKey() << '\n';
 
-    printSubtree(out, prefix, node->getLeft(), true);
-    printSubtree(out, prefix, node->getRight(), false);
+    // Use different prefixes if a node is not the last.
+    if (node->getRight() != this->nil_)
+        printSubtree(node->getLeft(), out, childprefix + "├── ", childprefix + "│   ");
+    else
+        printSubtree(node->getLeft(), out, childprefix + "└── ", childprefix + "    ");
+
+    printSubtree(node->getRight(), out, childprefix + "└── ", childprefix + "    ");
 }
 
 // Deallocate entire subtree. Supposed to be called from root node in destructor.
