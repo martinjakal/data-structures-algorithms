@@ -59,7 +59,7 @@ auto A_BinaryTree<T, Node>::print() const -> std::string
 
 // Print subtree based on Linux "tree" command.
 template <typename T, typename Node>
-void A_BinaryTree<T, Node>::printSubtree(std::stringstream& out, std::string prefix, std::string childprefix, Node* node) const
+void A_BinaryTree<T, Node>::printSubtree(Node* node, std::stringstream& out, std::string prefix, std::string childprefix) const
 {
     if (node == this->nil_)
         return;
