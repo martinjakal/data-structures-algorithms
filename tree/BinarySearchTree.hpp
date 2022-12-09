@@ -33,21 +33,21 @@ template <typename T>
 void BinarySearchTree<T>::insert(const T& key)
 {
     auto newNode = new Node(key);
-    auto prevNode = this->nil_;
-    auto curNode = this->root_;
+    auto parent = this->nil_;
+    auto child = this->root_;
 
-    while (curNode != this->nil_)
+    while (child != this->nil_)
     {
-        prevNode = curNode;
-        curNode = *newNode < *curNode ? curNode->getLeft() : curNode->getRight();
+        parent = child;
+        child = *newNode < *child ? child->getLeft() : child->getRight();
     }
 
-    newNode->setParent(prevNode);
+    newNode->setParent(parent);
 
-    if (prevNode == this->nil_)
+    if (parent == this->nil_)
         this->root_ = newNode;
     else
-        *newNode < *prevNode ? prevNode->setLeft(newNode) : prevNode->setRight(newNode);
+        *newNode < *parent ? parent->setLeft(newNode) : parent->setRight(newNode);
 }
 
 // Case 1: Node is leaf node - delete and pass nil to parent
