@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "ColorType.hpp"
 #include "Node.hpp"
 #include "NodeProperties.hpp"
@@ -19,6 +21,14 @@ public:
     bool isRed() const { return color_ == Color::Red; }
     bool isBlack() const { return color_ == Color::Black; }
 
+    auto print() const -> std::string;
+
 private:
     Color color_ = Color::Black;
 };
+
+template <typename T>
+auto RedBlackNode<T>::print() const -> std::string
+{
+    return Base::print() + (isBlack() ? "-B" : "-R");
+}
