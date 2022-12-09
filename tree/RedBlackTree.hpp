@@ -64,7 +64,7 @@ void RedBlackTree<T>::insert(const T& key)
 
     if (parent == this->nil_)
         this->root_ = newNode;
-    else 
+    else
         *newNode < *parent ? parent->setLeft(newNode) : parent->setRight(newNode);
 
     insertFixup(newNode);
