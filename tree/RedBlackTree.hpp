@@ -145,6 +145,14 @@ auto RedBlackTree<T>::findMax(Node* node) const -> Node*
     return node;
 }
 
+//
+//     |                 |
+//     X                 Y
+//    / \     LR(X)     / \
+//   a   Y   ------>   X   c
+//      / \           / \
+//     b   c         a   b
+//
 template <typename T>
 void RedBlackTree<T>::leftRotate(Node* node)
 {
@@ -167,6 +175,14 @@ void RedBlackTree<T>::leftRotate(Node* node)
     node->setParent(pivot);
 }
 
+//
+//       |                 |
+//       Y                 X
+//      / \     RR(Y)     / \
+//     X   c   ------>   a   Y
+//    / \                   / \
+//   a   b                 b   c
+//
 template <typename T>
 void RedBlackTree<T>::rightRotate(Node* node)
 {
