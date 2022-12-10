@@ -4,6 +4,13 @@
 #include "../node/RedBlackNode.hpp"
 #include "A_BinaryTree.hpp"
 
+// A red black tree is a binary tree that satisfies the following properties:
+// 1. Every node is either red or black.
+// 2. The root is black.
+// 3. Every leaf (nil) is black.
+// 4. If a node is red, then both its children are black.
+// 5. For each node, all simple paths from the node to descendant leaves contain
+//    the same number of black nodes.
 template <typename T>
 class RedBlackTree : public A_BinaryTree<T, RedBlackNode<T>>
 {
@@ -21,9 +28,9 @@ private:
     auto findMin(Node* node) const -> Node*;
     auto findMax(Node* node) const -> Node*;
 
+    void transplant(Node* oldNode, Node* newNode);
     void leftRotate(Node* node);
     void rightRotate(Node* node);
-    void transplant(Node* oldNode, Node* newNode);
     void insertFixup(Node* node);
     void removeFixup(Node* node);
 };
@@ -92,7 +99,7 @@ void RedBlackTree<T>::remove(const T& key)
     }
     else
     {
-        // Another option would be to find maximum of left subtree and rotate accordingly.
+        // Another option would be to find maximum of left subtree (predecessor) and rotate accordingly.
         auto midNode = findMin(delNode->getRight());
         originalColorWasBlack = midNode->isBlack();
         successor = midNode->getRight();
@@ -143,6 +150,21 @@ auto RedBlackTree<T>::findMax(Node* node) const -> Node*
         node = node->getRight();
 
     return node;
+}
+
+template <typename T>
+void RedBlackTree<T>::transplant(Node* oldNode, Node* newNode)
+{
+    auto oldParent = oldNode->getParent();
+
+    if (oldParent == this->nil_)
+        this->root_ = newNode;
+    else if (oldNode == oldParent->getLeft())
+        oldParent->setLeft(newNode);
+    else
+        oldParent->setRight(newNode);
+
+    newNode->setParent(oldParent);
 }
 
 //
@@ -203,21 +225,6 @@ void RedBlackTree<T>::rightRotate(Node* node)
 
     pivot->setRight(node);
     node->setParent(pivot);
-}
-
-template <typename T>
-void RedBlackTree<T>::transplant(Node* oldNode, Node* newNode)
-{
-    auto oldParent = oldNode->getParent();
-
-    if (oldParent == this->nil_)
-        this->root_ = newNode;
-    else if (oldNode == oldParent->getLeft())
-        oldParent->setLeft(newNode);
-    else
-        oldParent->setRight(newNode);
-
-    newNode->setParent(oldParent);
 }
 
 // Case 1: Uncle is red
