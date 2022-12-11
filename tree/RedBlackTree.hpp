@@ -39,7 +39,8 @@ private:
     auto findMax(Node* node) const -> Node*;
 
     void initSentinel();
-    auto cloneSubtree(Node* parent, Node* node, Node* sentinel) -> Node*;
+    void cloneTree(Node* otherRoot, Node* otherSentinel);
+    void recolorSubtree(Node* node, Node* otherNode, Node* otherSentinel);
 
     void transplant(Node* oldNode, Node* newNode);
     void leftRotate(Node* node);
@@ -68,7 +69,7 @@ template <typename T>
 RedBlackTree<T>::RedBlackTree(const RedBlackTree<T>& other)
 {
     initSentinel();
-    this->root_ = cloneSubtree(this->nil_, other.root_, other.nil_);
+    cloneTree(other.root_, other.nil_);
 }
 
 template <typename T>
@@ -97,22 +98,24 @@ RedBlackTree<T>::~RedBlackTree()
 {
     this->cleanUpSubtree(this->root_);
     delete this->nil_;
-};
+}
 
 template <typename T>
-auto RedBlackTree<T>::cloneSubtree(Node* parent, Node* node, Node* sentinel) -> Node*
+void RedBlackTree<T>::cloneTree(Node* otherRoot, Node* otherSentinel)
 {
-    if (node == sentinel)
-        return this->nil_;
+    this->root_ = this->cloneSubtree(this->nil_, otherRoot, otherSentinel);
+    recolorSubtree(this->root_, otherRoot, otherSentinel);
+}
 
-    auto copy = new Node(node->getKey());
+template <typename T>
+void RedBlackTree<T>::recolorSubtree(Node* node, Node* otherNode, Node* otherSentinel)
+{
+    if (otherNode == otherSentinel)
+        return;
 
-    copy->recolor(node);
-    copy->setParent(parent);
-    copy->setLeft(cloneSubtree(copy, node->getLeft(), sentinel));
-    copy->setRight(cloneSubtree(copy, node->getRight(), sentinel));
-
-    return copy;
+    node->recolor(otherNode);
+    recolorSubtree(node->getLeft(), otherNode->getLeft(), otherSentinel);
+    recolorSubtree(node->getRight(), otherNode->getRight(), otherSentinel);
 }
 
 template <typename T>
