@@ -2,6 +2,9 @@
 
 #include <string>
 
+// Special member variable nil_ is used to represent an empty leaf. In many cases this would work
+// just as alias for null pointer, but sometimes a special "empty" node called sentinel is created 
+// and all empty leaves point to the sentinel (useful in self-balancing trees).
 template <typename T, typename Node>
 class A_Tree
 {

@@ -19,6 +19,7 @@ public:
 protected:
     void cleanUpSubtree(Node* node);
     void printSubtree(Node* node, std::stringstream& out, std::string prefix, std::string childprefix) const;
+    auto cloneSubtree(Node* parent, Node* node, Node* sentinel) -> Node*;
 
     virtual auto search(Node* node, const T& key) const -> Node* = 0;
     virtual auto findMin(Node* node) const -> Node* = 0;
@@ -64,7 +65,7 @@ void A_BinaryTree<T, Node>::printSubtree(Node* node, std::stringstream& out, std
     if (node == this->nil_)
         return;
 
-    out << prefix << node->getKey() << '\n';
+    out << prefix << node->print() << '\n';
 
     // Use different prefixes if a node is not the last.
     if (node->getRight() != this->nil_)
@@ -85,4 +86,22 @@ void A_BinaryTree<T, Node>::cleanUpSubtree(Node* node)
     cleanUpSubtree(node->getLeft());
     cleanUpSubtree(node->getRight());
     delete node;
+}
+
+// Recursively copy another tree into this one (starting from root). 
+// The arguments are: parent - parent of the new node, node - the node in other tree, sentinel - empty leaf in other tree
+// Example of function call to copy the entire tree: this->root_ = this->cloneSubtree(this->nil_, other.root_, other.nil_)
+template <typename T, typename Node>
+auto A_BinaryTree<T, Node>::cloneSubtree(Node* parent, Node* node, Node* sentinel) -> Node*
+{
+    if (node == sentinel)
+        return this->nil_;
+
+    auto copy = new Node(node->getKey());
+
+    copy->setParent(parent);
+    copy->setLeft(cloneSubtree(copy, node->getLeft(), sentinel));
+    copy->setRight(cloneSubtree(copy, node->getRight(), sentinel));
+
+    return copy;
 }
