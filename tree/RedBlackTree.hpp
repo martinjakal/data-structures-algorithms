@@ -9,8 +9,7 @@
 // 2. The root is black.
 // 3. Every leaf (nil) is black.
 // 4. If a node is red, then both its children are black.
-// 5. For each node, all simple paths from the node to descendant leaves contain
-//    the same number of black nodes.
+// 5. For each node, all simple paths from the node to descendant leaves contain the same number of black nodes.
 template <typename T>
 class RedBlackTree : public A_BinaryTree<T, RedBlackNode<T>>
 {
@@ -18,7 +17,18 @@ public:
     using Node = RedBlackNode<T>;
 
     RedBlackTree();
+    RedBlackTree(const RedBlackTree<T>& other);
+    RedBlackTree(RedBlackTree<T>&& other) noexcept;
+    auto& operator=(const RedBlackTree<T>& other);
+    auto& operator=(RedBlackTree<T>&& other) noexcept;
     ~RedBlackTree();
+
+    friend void swap(RedBlackTree<T>& lhs, RedBlackTree<T>& rhs) noexcept
+    {
+        using std::swap;
+        swap(lhs.root_, rhs.root_);
+        swap(lhs.nil_, rhs.nil_);
+    }
 
     void insert(const T& key);
     void remove(const T& key);
@@ -27,6 +37,9 @@ private:
     auto search(Node* node, const T& key) const -> Node*;
     auto findMin(Node* node) const -> Node*;
     auto findMax(Node* node) const -> Node*;
+
+    void initSentinel();
+    auto cloneSubtree(Node* parent, Node* node, Node* sentinel) -> Node*;
 
     void transplant(Node* oldNode, Node* newNode);
     void leftRotate(Node* node);
@@ -38,12 +51,46 @@ private:
 // A sentinel (black node with no parent and no children) is used to represent leaf nodes 
 // to avoid excessive null pointer checking when handling corner cases.
 template <typename T>
-RedBlackTree<T>::RedBlackTree()
+void RedBlackTree<T>::initSentinel()
 {
     auto sentinel = new RedBlackNode<T>;
     this->nil_ = sentinel;
+};
+
+template <typename T>
+RedBlackTree<T>::RedBlackTree()
+{
+    initSentinel();
     this->root_ = this->nil_;
 };
+
+template <typename T>
+RedBlackTree<T>::RedBlackTree(const RedBlackTree<T>& other)
+{
+    initSentinel();
+    this->root_ = cloneSubtree(this->nil_, other.root_, other.nil_);
+}
+
+template <typename T>
+RedBlackTree<T>::RedBlackTree(RedBlackTree<T>&& other) noexcept
+{
+    swap(*this, other);
+}
+
+template <typename T>
+auto& RedBlackTree<T>::operator=(const RedBlackTree<T>& other)
+{
+    auto copy(other);
+    swap(*this, other);
+    return *this;
+}
+
+template <typename T>
+auto& RedBlackTree<T>::operator=(RedBlackTree<T>&& other) noexcept
+{
+    swap(*this, other);
+    return *this;
+}
 
 template <typename T>
 RedBlackTree<T>::~RedBlackTree()
@@ -53,9 +100,25 @@ RedBlackTree<T>::~RedBlackTree()
 };
 
 template <typename T>
+auto RedBlackTree<T>::cloneSubtree(Node* parent, Node* node, Node* sentinel) -> Node*
+{
+    if (node == sentinel)
+        return this->nil_;
+
+    auto copy = new Node(node->getKey());
+
+    copy->recolor(node);
+    copy->setParent(parent);
+    copy->setLeft(cloneSubtree(copy, node->getLeft(), sentinel));
+    copy->setRight(cloneSubtree(copy, node->getRight(), sentinel));
+
+    return copy;
+}
+
+template <typename T>
 void RedBlackTree<T>::insert(const T& key)
 {
-    auto newNode = new RedBlackNode<T>(key);
+    auto newNode = new Node(key);
     auto parent = this->nil_;
     auto child = this->root_;
 
