@@ -53,7 +53,7 @@ private:
 template <typename T>
 void RedBlackTree<T>::initSentinel()
 {
-    auto sentinel = new RedBlackNode<T>;
+    auto sentinel = new Node;
     this->nil_ = sentinel;
 };
 
