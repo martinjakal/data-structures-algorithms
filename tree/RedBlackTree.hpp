@@ -23,12 +23,7 @@ public:
     auto& operator=(RedBlackTree<T>&& other) noexcept;
     ~RedBlackTree();
 
-    friend void swap(RedBlackTree<T>& lhs, RedBlackTree<T>& rhs) noexcept
-    {
-        using std::swap;
-        swap(lhs.root_, rhs.root_);
-        swap(lhs.nil_, rhs.nil_);
-    }
+    friend void swap(RedBlackTree<T>& lhs, RedBlackTree<T>& rhs) noexcept;
 
     void insert(const T& key);
     void remove(const T& key);
@@ -98,6 +93,14 @@ RedBlackTree<T>::~RedBlackTree()
 {
     this->cleanUpSubtree(this->root_);
     delete this->nil_;
+}
+
+template <typename T>
+void swap(RedBlackTree<T>& lhs, RedBlackTree<T>& rhs) noexcept
+{
+    using std::swap;
+    swap(lhs.root_, rhs.root_);
+    swap(lhs.nil_, rhs.nil_);
 }
 
 template <typename T>
