@@ -11,12 +11,16 @@ class RedBlackNode : public Node<T>, public HasParent<RedBlackNode<T>>, public H
 {
 public:
     using Base = Node<T>;
+    using Node = RedBlackNode<T>;
 
     RedBlackNode(const T& key) : Base(key), color_(Color::Red) {}
     RedBlackNode() = default;
 
+    bool operator==(const Node& other) const;
+    bool operator!=(const Node& other) const;
+
     void setColor(Color color) { color_ = color; }
-    void recolor(RedBlackNode<T>* node) { color_ = node->color_; }
+    void recolor(Node* node) { color_ = node->color_; }
 
     bool isRed() const { return color_ == Color::Red; }
     bool isBlack() const { return color_ == Color::Black; }
@@ -26,6 +30,18 @@ public:
 private:
     Color color_ = Color::Black;
 };
+
+template <typename T>
+bool RedBlackNode<T>::operator==(const Node& other) const
+{
+    return Base::operator==(other) && color_ == other.color_;
+}
+
+template <typename T>
+bool RedBlackNode<T>::operator!=(const Node& other) const
+{
+    return !(*this == other);
+}
 
 template <typename T>
 auto RedBlackNode<T>::print() const -> std::string
