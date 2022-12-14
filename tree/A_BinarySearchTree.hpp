@@ -55,5 +55,6 @@ void A_BinarySearchTree<T, Node>::transplant(Node* oldNode, Node* newNode)
     else
         oldParent->setRight(newNode);
 
-    newNode->setParent(oldParent);
+    if (newNode != this->nil_)
+        newNode->setParent(oldParent);
 }
