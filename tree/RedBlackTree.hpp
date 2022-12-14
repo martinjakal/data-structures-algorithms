@@ -2,7 +2,7 @@
 
 #include "../node/ColorType.hpp"
 #include "../node/RedBlackNode.hpp"
-#include "A_BinaryTree.hpp"
+#include "A_BinarySearchTree.hpp"
 
 // A red black tree is a binary tree that satisfies the following properties:
 // 1. Every node is either red or black.
@@ -11,7 +11,7 @@
 // 4. If a node is red, then both its children are black.
 // 5. For each node, all simple paths from the node to descendant leaves contain the same number of black nodes.
 template <typename T>
-class RedBlackTree : public A_BinaryTree<T, RedBlackNode<T>>
+class RedBlackTree : public A_BinarySearchTree<T, RedBlackNode<T>>
 {
 public:
     using Node = RedBlackNode<T>;
@@ -29,15 +29,10 @@ public:
     void remove(const T& key);
 
 private:
-    auto search(Node* node, const T& key) const -> Node*;
-    auto findMin(Node* node) const -> Node*;
-    auto findMax(Node* node) const -> Node*;
-
     void initSentinel();
     void cloneTree(Node* otherRoot, Node* otherSentinel);
     void recolorSubtree(Node* node, Node* otherNode, Node* otherSentinel);
 
-    void transplant(Node* oldNode, Node* newNode);
     void leftRotate(Node* node);
     void rightRotate(Node* node);
     void insertFixup(Node* node);
@@ -149,7 +144,7 @@ void RedBlackTree<T>::insert(const T& key)
 template <typename T>
 void RedBlackTree<T>::remove(const T& key)
 {
-    auto delNode = search(this->root_, key);
+    auto delNode = this->search(this->root_, key);
     if (delNode == this->nil_)
         return;
 
@@ -159,17 +154,17 @@ void RedBlackTree<T>::remove(const T& key)
     if (delNode->getLeft() == this->nil_)
     {
         successor = delNode->getRight();
-        transplant(delNode, delNode->getRight());
+        this->transplant(delNode, delNode->getRight());
     }
     else if (delNode->getRight() == this->nil_)
     {
         successor = delNode->getLeft();
-        transplant(delNode, delNode->getLeft());
+        this->transplant(delNode, delNode->getLeft());
     }
     else
     {
-        // Another option would be to find maximum of left subtree (predecessor) and rotate accordingly.
-        auto midNode = findMin(delNode->getRight());
+        // Another option would be to find maximum of left subtree and rotate accordingly.
+        auto midNode = this->findMin(delNode->getRight());
         originalColorWasBlack = midNode->isBlack();
         successor = midNode->getRight();
 
@@ -177,12 +172,12 @@ void RedBlackTree<T>::remove(const T& key)
             successor->setParent(midNode);
         else
         {
-            transplant(midNode, midNode->getRight());
+            this->transplant(midNode, midNode->getRight());
             midNode->setRight(delNode->getRight());
             midNode->getRight()->setParent(midNode);
         }
 
-        transplant(delNode, midNode);
+        this->transplant(delNode, midNode);
         midNode->setLeft(delNode->getLeft());
         midNode->getLeft()->setParent(midNode);
         midNode->recolor(delNode);
@@ -192,48 +187,6 @@ void RedBlackTree<T>::remove(const T& key)
 
     if (originalColorWasBlack)
         removeFixup(successor);
-}
-
-template <typename T>
-auto RedBlackTree<T>::search(Node* node, const T& key) const -> Node*
-{
-    while (node != this->nil_ && node->getKey() != key)
-        node = key < node->getKey() ? node->getLeft() : node->getRight();
-
-    return node;
-}
-
-template <typename T>
-auto RedBlackTree<T>::findMin(Node* node) const -> Node*
-{
-    while (node->getLeft() != this->nil_)
-        node = node->getLeft();
-
-    return node;
-}
-
-template <typename T>
-auto RedBlackTree<T>::findMax(Node* node) const -> Node*
-{
-    while (node->getRight() != this->nil_)
-        node = node->getRight();
-
-    return node;
-}
-
-template <typename T>
-void RedBlackTree<T>::transplant(Node* oldNode, Node* newNode)
-{
-    auto oldParent = oldNode->getParent();
-
-    if (oldParent == this->nil_)
-        this->root_ = newNode;
-    else if (oldNode == oldParent->getLeft())
-        oldParent->setLeft(newNode);
-    else
-        oldParent->setRight(newNode);
-
-    newNode->setParent(oldParent);
 }
 
 //

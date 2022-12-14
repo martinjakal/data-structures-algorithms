@@ -22,14 +22,14 @@ public:
     auto print() const -> std::string;
 
 protected:
+    virtual auto search(Node* node, const T& key) const -> Node* = 0;
+    virtual auto findMin(Node* node) const -> Node* = 0;
+    virtual auto findMax(Node* node) const -> Node* = 0;
+
     void cleanUpSubtree(Node* node);
     auto cloneSubtree(Node* parent, Node* node, Node* sentinel) -> Node*;
     bool isSameSubtree(Node* node, Node* otherNode, Node* otherSentinel) const;
     void printSubtree(Node* node, std::stringstream& out, std::string prefix, std::string childprefix) const;
-
-    virtual auto search(Node* node, const T& key) const -> Node* = 0;
-    virtual auto findMin(Node* node) const -> Node* = 0;
-    virtual auto findMax(Node* node) const -> Node* = 0;
 };
 
 template <typename T, typename Node>
