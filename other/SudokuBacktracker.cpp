@@ -1,12 +1,13 @@
 #include "SudokuBacktracker.hpp"
 
-auto SudokuBacktracker::operator()() -> Grid
+auto SudokuBacktracker::solve(Grid grid) -> Grid
 {
-    solve();
-    return grid_;
+    auto sb = SudokuBacktracker(grid);
+    sb.fillNumbers();
+    return sb.grid_;
 }
 
-bool SudokuBacktracker::solve()
+bool SudokuBacktracker::fillNumbers()
 {
     int row;
     int col;
@@ -16,15 +17,15 @@ bool SudokuBacktracker::solve()
 
     for (int number = 1; number <= 9; ++number)
     {
-        if (noConflicts(row, col, number))
-        {
-            grid_[row][col] = number;
+        if (hasConflicts(row, col, number))
+            continue;
 
-            if (solve())
-                return true;
+        grid_[row][col] = number;
 
-            grid_[row][col] = 0;
-        }
+        if (fillNumbers())
+            return true;
+
+        grid_[row][col] = 0;
     }
 
     return false;
@@ -43,9 +44,9 @@ bool SudokuBacktracker::findEmptyPlace(int& row, int& col) const
     return false;
 }
 
-bool SudokuBacktracker::noConflicts(int row, int col, int number) const
+bool SudokuBacktracker::hasConflicts(int row, int col, int number) const
 {
-    return !usedInRow(row, number) && !usedInCol(col, number) && !usedInBox(row - row % 3, col - col % 3, number);
+    return usedInRow(row, number) || usedInCol(col, number) || usedInBox(row - row % 3, col - col % 3, number);
 }
 
 bool SudokuBacktracker::usedInRow(int row, int number) const

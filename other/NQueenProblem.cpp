@@ -2,7 +2,7 @@
 
 constexpr int NQueenProblem::FREE;
 
-NQueenProblem::NQueenProblem(int queens): queens_(queens)
+NQueenProblem::NQueenProblem(int queens) : queens_(queens)
 {
     grid_.resize(queens_);
     for (auto& row : grid_)
@@ -12,11 +12,11 @@ NQueenProblem::NQueenProblem(int queens): queens_(queens)
 auto NQueenProblem::solve(int queens) -> Grid
 {
     auto nqp = NQueenProblem(queens);
-    nqp.solveForColumn();
+    nqp.placeQueenInColumn();
     return nqp.grid_;
 }
 
-bool NQueenProblem::solveForColumn(int col)
+bool NQueenProblem::placeQueenInColumn(int col)
 {
     if (col == queens_)
         return true;
@@ -28,7 +28,7 @@ bool NQueenProblem::solveForColumn(int col)
 
         grid_[i][col] = QUEEN;
 
-        if (solveForColumn(col + 1))
+        if (placeQueenInColumn(col + 1))
             return true;
 
         grid_[i][col] = FREE;

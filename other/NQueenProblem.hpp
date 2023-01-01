@@ -18,6 +18,6 @@ private:
 
     NQueenProblem(int queens);
 
-    bool solveForColumn(int col = 0);
+    bool placeQueenInColumn(int col = 0);
     bool hasConflicts(int row, int col) const;
 };

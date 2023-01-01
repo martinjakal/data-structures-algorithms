@@ -7,16 +7,16 @@ class SudokuBacktracker
 public:
     using Grid = std::vector<std::vector<int>>;
 
-    SudokuBacktracker(Grid grid) : grid_(grid) {}
-
-    auto operator()() -> Grid;
+    static auto solve(Grid grid) -> Grid;
 
 private:
     Grid grid_;
 
-    bool solve();
+    SudokuBacktracker(Grid grid) : grid_(grid) {}
+
+    bool fillNumbers();
     bool findEmptyPlace(int& row, int& col) const;
-    bool noConflicts(int row, int col, int number) const;
+    bool hasConflicts(int row, int col, int number) const;
     bool usedInRow(int row, int number) const;
     bool usedInCol(int col, int number) const;
     bool usedInBox(int boxRow, int boxCol, int number) const;
