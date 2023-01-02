@@ -8,10 +8,11 @@ TowerOfHanoi::TowerOfHanoi(int discs) : discs_(discs)
         left_.push_back(i);
 }
 
-void TowerOfHanoi::operator()()
+void TowerOfHanoi::solve(int discs)
 {
-    print();
-    solve(discs_, left_, right_, middle_);
+    auto toh = TowerOfHanoi(discs);
+    toh.print();
+    toh.solve(toh.discs_, toh.left_, toh.right_, toh.middle_);
 }
 
 void TowerOfHanoi::solve(int discs, Rod& start, Rod& end, Rod& help)

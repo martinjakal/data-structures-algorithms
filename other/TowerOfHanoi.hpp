@@ -7,15 +7,15 @@ class TowerOfHanoi
 public:
     using Rod = std::vector<int>;
 
-    TowerOfHanoi(int discs);
-
-    void operator()();
+    static void solve(int discs);
 
 private:
     const int discs_;
     Rod left_;
     Rod middle_;
     Rod right_;
+
+    TowerOfHanoi(int discs);
 
     void solve(int discs, Rod& start, Rod& end, Rod& help);
     void move(int disc, Rod& start, Rod& end);
