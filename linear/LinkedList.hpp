@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 
-#include <node/LinkedNode.hpp>
+#include <node/UnaryNode.hpp>
 
 template <typename T>
 class LinkedList
@@ -12,8 +12,8 @@ public:
     LinkedList() = default;
     LinkedList(const LinkedList<T>& other);
     LinkedList(LinkedList<T>&& other) noexcept;
-    LinkedList<T>& operator=(const LinkedList<T>& other);
-    LinkedList<T>& operator=(LinkedList<T>&& other) noexcept;
+    auto& operator=(const LinkedList<T>& other);
+    auto& operator=(LinkedList<T>&& other) noexcept;
     ~LinkedList();
 
     bool empty() const;
@@ -32,19 +32,14 @@ public:
     void removeAtEnd();
 
 private:
-    LinkedNode<T>* head_ = nullptr;
+    UnaryNode<T>* head_ = nullptr;
 };
 
 template <typename T>
 LinkedList<T>::LinkedList(const LinkedList<T>& other)
 {
-    LinkedNode<T>* node = other.head_;
-
-    while (node != nullptr)
-    {
+    for (auto node = other.head_; node != nullptr; node = node->getNext())
         insert(node->getKey());
-        node = node->getNext();
-    }
 }
 
 template <typename T>
@@ -56,7 +51,7 @@ LinkedList<T>::LinkedList(LinkedList<T>&& other) noexcept
 template <typename T>
 LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& other)
 {
-    LinkedList<T> copy(other);
+    auto copy(other);
     std::swap(head_, copy.head_);
     return *this;
 }
@@ -73,7 +68,7 @@ LinkedList<T>::~LinkedList()
 {
     while (head_ != nullptr)
     {
-        LinkedNode<T>* node = head_;
+        auto node = head_;
         head_ = head_->getNext();
         delete node;
     }
@@ -99,7 +94,7 @@ auto LinkedList<T>::size() const -> std::size_t
 template <typename T>
 bool LinkedList<T>::contains(const T& value) const
 {
-    LinkedNode<T>* node = head_;
+    auto node = head_;
 
     while (node != nullptr && node->getKey() != value)
         node = node->getNext();
@@ -116,7 +111,7 @@ void LinkedList<T>::insert(const T& value)
 template <typename T>
 void LinkedList<T>::insertAtBegin(const T& value)
 {
-    head_ = new LinkedNode<T>(value, head_);
+    head_ = new UnaryNode<T>(value, head_);
 }
 
 template <typename T>
@@ -131,12 +126,12 @@ void LinkedList<T>::insertAtPos(std::size_t idx, const T& value)
     if (idx >= size())
         throw std::runtime_error("Index out of range");
 
-    LinkedNode<T>* node = head_;
+    auto node = head_;
 
     for (std::size_t i = 0; i < idx - 1; ++i) // traverse to parent
         node = node->getNext();
 
-    node->setNext(new LinkedNode<T>(value, node->getNext()));
+    node->setNext(new UnaryNode<T>(value, node->getNext()));
 }
 
 template <typename T>
@@ -148,12 +143,12 @@ void LinkedList<T>::insertAtEnd(const T& value)
         return;
     }
 
-    LinkedNode<T>* node = head_;
+    auto node = head_;
 
     while (node->getNext() != nullptr)
         node = node->getNext();
 
-    node->setNext(new LinkedNode<T>(value));
+    node->setNext(new UnaryNode<T>(value));
 }
 
 template <typename T>
@@ -168,8 +163,8 @@ void LinkedList<T>::remove(const T& value)
         return;
     }
 
-    LinkedNode<T>* parent = nullptr;
-    LinkedNode<T>* node = head_;
+    UnaryNode<T>* parent = nullptr;
+    auto node = head_;
 
     while (node->getNext() != nullptr)
     {
@@ -191,7 +186,7 @@ void LinkedList<T>::removeAtBegin()
     if (empty())
         throw std::runtime_error("Linked list underflow");
 
-    LinkedNode<T>* node = head_;
+    auto node = head_;
     head_ = head_->getNext();
     delete node;
 }
@@ -211,8 +206,8 @@ void LinkedList<T>::removeAtPos(std::size_t idx)
         return;
     }
 
-    LinkedNode<T>* parent = nullptr;
-    LinkedNode<T>* node = head_;
+    UnaryNode<T>* parent = nullptr;
+    auto node = head_;
 
     for (std::size_t i = 0; i < idx; ++i)
     {
@@ -236,8 +231,8 @@ void LinkedList<T>::removeAtEnd()
         return;
     }
 
-    LinkedNode<T>* parent = nullptr;
-    LinkedNode<T>* node = head_;
+    UnaryNode<T>* parent = nullptr;
+    auto node = head_;
 
     while (node->getNext() != nullptr)
     {
