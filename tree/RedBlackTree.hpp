@@ -31,7 +31,7 @@ public:
 private:
     void initSentinel();
     void cloneTree(Node* otherRoot, Node* otherSentinel);
-    void recolorSubtree(Node* node, Node* otherNode, Node* otherSentinel);
+    void cloneColorsSubtree(Node* node, Node* otherNode, Node* otherSentinel);
 
     void leftRotate(Node* node);
     void rightRotate(Node* node);
@@ -102,18 +102,18 @@ template <typename T>
 void RedBlackTree<T>::cloneTree(Node* otherRoot, Node* otherSentinel)
 {
     this->root_ = this->cloneSubtree(this->nil_, otherRoot, otherSentinel);
-    recolorSubtree(this->root_, otherRoot, otherSentinel);
+    cloneColorsSubtree(this->root_, otherRoot, otherSentinel);
 }
 
 template <typename T>
-void RedBlackTree<T>::recolorSubtree(Node* node, Node* otherNode, Node* otherSentinel)
+void RedBlackTree<T>::cloneColorsSubtree(Node* node, Node* otherNode, Node* otherSentinel)
 {
     if (otherNode == otherSentinel)
         return;
 
     node->recolor(otherNode);
-    recolorSubtree(node->getLeft(), otherNode->getLeft(), otherSentinel);
-    recolorSubtree(node->getRight(), otherNode->getRight(), otherSentinel);
+    cloneColorsSubtree(node->getLeft(), otherNode->getLeft(), otherSentinel);
+    cloneColorsSubtree(node->getRight(), otherNode->getRight(), otherSentinel);
 }
 
 template <typename T>
