@@ -1,5 +1,8 @@
 #pragma once
 
+#include <algorithm>
+#include <vector>
+
 template <typename Node>
 class HasParent
 {
@@ -41,4 +44,39 @@ protected:
     Node* right_ = nullptr;
 
     HasDoubleChild() = default;
+};
+
+template <typename Node>
+class HasNChildren
+{
+public:
+    auto getChildren() const -> Node* { return children_; }
+    void setChildren(const std::vector<Node*>& children) { children_ = children; }
+
+    void addChild(Node* node)
+    {
+        children_.push_back(node);
+    }
+    void removeChild(Node* node)
+    {
+        std::remove_if(children_.begin(), children_.end(), [node](Node* child) { return child == node; });
+    }
+
+protected:
+    std::vector<Node*> children_;
+
+    HasNChildren() = default;
+};
+
+template <typename Node>
+class HasHeight
+{
+public:
+    int getHeight() const { return height_; }
+    void setHeight(int height) { height_ = height; }
+
+protected:
+    int height_ = 0;
+
+    HasHeight() = default;
 };
